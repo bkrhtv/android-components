@@ -27,7 +27,7 @@ import mozilla.components.support.test.mock
 import mozilla.components.support.test.robolectric.testContext
 import mozilla.components.support.test.whenever
 import org.junit.After
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -82,8 +82,6 @@ class RecentlyClosedMiddlewareTest {
             store.dispatch(RecentlyClosedAction.AddClosedTabsAction(listOf(closedTab)))
                 .joinBlocking()
 
-            dispatcher.advanceUntilIdle()
-
             verify(middleware.recentlyClosedTabsStorage).addTabsToCollectionWithMax(
                 listOf(closedTab), 5
             )
@@ -104,22 +102,19 @@ class RecentlyClosedMiddlewareTest {
                     middleware = listOf(middleware)
                 )
             )
-            whenever(context.store).thenReturn(store)
             whenever(middleware.recentlyClosedTabsStorage).thenReturn(storage)
 
             store.dispatch(TabListAction.RemoveTabAction("1234")).joinBlocking()
-
-            dispatcher.advanceUntilIdle()
 
             val closedTabCaptor = argumentCaptor<List<ClosedTab>>()
             verify(middleware.recentlyClosedTabsStorage).addTabsToCollectionWithMax(
                 closedTabCaptor.capture(),
                 eq(5)
             )
-            Assert.assertEquals(1, closedTabCaptor.value.size)
-            Assert.assertEquals(tab.content.title, closedTabCaptor.value[0].title)
-            Assert.assertEquals(tab.content.url, closedTabCaptor.value[0].url)
-            Assert.assertEquals(
+            assertEquals(1, closedTabCaptor.value.size)
+            assertEquals(tab.content.title, closedTabCaptor.value[0].title)
+            assertEquals(tab.content.url, closedTabCaptor.value[0].url)
+            assertEquals(
                 tab.engineState.engineSessionState,
                 closedTabCaptor.value[0].engineSessionState
             )
@@ -140,12 +135,9 @@ class RecentlyClosedMiddlewareTest {
                     middleware = listOf(middleware)
                 )
             )
-            whenever(context.store).thenReturn(store)
             whenever(middleware.recentlyClosedTabsStorage).thenReturn(storage)
 
             store.dispatch(TabListAction.RemoveTabAction("1234")).joinBlocking()
-
-            dispatcher.advanceUntilIdle()
 
             verifyNoMoreInteractions(middleware.recentlyClosedTabsStorage)
         }
@@ -166,22 +158,19 @@ class RecentlyClosedMiddlewareTest {
                     middleware = listOf(middleware)
                 )
             )
-            whenever(context.store).thenReturn(store)
             whenever(middleware.recentlyClosedTabsStorage).thenReturn(storage)
 
             store.dispatch(TabListAction.RemoveAllNormalTabsAction).joinBlocking()
-
-            dispatcher.advanceUntilIdle()
 
             val closedTabCaptor = argumentCaptor<List<ClosedTab>>()
             verify(middleware.recentlyClosedTabsStorage).addTabsToCollectionWithMax(
                 closedTabCaptor.capture(),
                 eq(5)
             )
-            Assert.assertEquals(1, closedTabCaptor.value.size)
-            Assert.assertEquals(tab.content.title, closedTabCaptor.value[0].title)
-            Assert.assertEquals(tab.content.url, closedTabCaptor.value[0].url)
-            Assert.assertEquals(
+            assertEquals(1, closedTabCaptor.value.size)
+            assertEquals(tab.content.title, closedTabCaptor.value[0].title)
+            assertEquals(tab.content.url, closedTabCaptor.value[0].url)
+            assertEquals(
                 tab.engineState.engineSessionState,
                 closedTabCaptor.value[0].engineSessionState
             )
@@ -203,22 +192,19 @@ class RecentlyClosedMiddlewareTest {
                     middleware = listOf(middleware)
                 )
             )
-            whenever(context.store).thenReturn(store)
             whenever(middleware.recentlyClosedTabsStorage).thenReturn(storage)
 
             store.dispatch(TabListAction.RemoveAllTabsAction).joinBlocking()
-
-            dispatcher.advanceUntilIdle()
 
             val closedTabCaptor = argumentCaptor<List<ClosedTab>>()
             verify(middleware.recentlyClosedTabsStorage).addTabsToCollectionWithMax(
                 closedTabCaptor.capture(),
                 eq(5)
             )
-            Assert.assertEquals(1, closedTabCaptor.value.size)
-            Assert.assertEquals(tab.content.title, closedTabCaptor.value[0].title)
-            Assert.assertEquals(tab.content.url, closedTabCaptor.value[0].url)
-            Assert.assertEquals(
+            assertEquals(1, closedTabCaptor.value.size)
+            assertEquals(tab.content.title, closedTabCaptor.value[0].title)
+            assertEquals(tab.content.url, closedTabCaptor.value[0].url)
+            assertEquals(
                 tab.engineState.engineSessionState,
                 closedTabCaptor.value[0].engineSessionState
             )
@@ -245,10 +231,8 @@ class RecentlyClosedMiddlewareTest {
 
             store.dispatch(RecentlyClosedAction.InitializeRecentlyClosedState).joinBlocking()
 
-            dispatcher.advanceUntilIdle()
-
             verify(storage).getTabs()
-            Assert.assertEquals(closedTab, store.state.closedTabs[0])
+            assertEquals(closedTab, store.state.closedTabs[0])
         }
 
     @Test
